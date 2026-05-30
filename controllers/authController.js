@@ -6,11 +6,9 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-/*
-==================================
-Generate JWT Token
-==================================
-*/
+
+// Generate JWT Token
+
 const generateToken = (user) => {
   return jwt.sign(
     {
@@ -25,11 +23,8 @@ const generateToken = (user) => {
 };
 
 /*
-==================================
 Register User / Company
-==================================
 POST /api/auth/register
-==================================
 */
 const register = async (req, res) => {
   try {
@@ -102,11 +97,8 @@ const register = async (req, res) => {
 };
 
 /*
-==================================
 Login
-==================================
 POST /api/auth/login
-==================================
 */
 const login = async (req, res) => {
   try {
@@ -161,11 +153,8 @@ const login = async (req, res) => {
 };
 
 /*
-==================================
 Get Current User
-==================================
 GET /api/auth/me
-==================================
 */
 const getMe = async (req, res) => {
   try {

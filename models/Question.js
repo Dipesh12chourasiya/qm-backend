@@ -14,16 +14,25 @@ const questionSchema = new mongoose.Schema(
       trim: true,
     },
 
-    options: [
-      {
-        type: String,
-        required: true,
+    options: {
+      type: [String],
+      required: true,
+      validate: {
+        validator: function (v) {
+          return v.length === 4;
+        },
+        message: "Question must have exactly 4 options",
       },
-    ],
+    },
 
     correctAnswer: {
       type: String,
       required: true,
+    },
+
+    explanation: {
+      type: String,
+      default: "",
     },
 
     category: {
@@ -46,6 +55,17 @@ const questionSchema = new mongoose.Schema(
     marks: {
       type: Number,
       default: 1,
+    },
+
+    negativeMarks: {
+      type: Number,
+      default: 0,
+    },
+
+    questionType: {
+      type: String,
+      enum: ["MCQ"],
+      default: "MCQ",
     },
   },
   {

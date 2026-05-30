@@ -2,11 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-
-const authRoutes = require("./routes/authRoutes");
-
 dotenv.config();
 connectDB();
+
+
+const authRoutes = require("./routes/authRoutes");
+const questionRoutes = require("./routes/questionRoutes");
+
 
 const app = express();
 
@@ -15,8 +17,10 @@ app.use(cors());
 app.use(express.json());
 
 
-// Use the auth routes
+//routes
 app.use("/api/auth", authRoutes);
+app.use("/api/questions", questionRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("Backend is working!");

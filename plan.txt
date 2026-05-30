@@ -243,6 +243,27 @@ backend
 
 
 
+questionController.js
+├── createQuestion
+├── getMyQuestions
+├── getQuestionById
+├── updateQuestion
+└── deleteQuestion
+
+testController.js
+├── createTest
+├── getAllTests
+├── getTestById
+├── registerForTest
+└── getMyCreatedTests
+
+attemptController.js
+├── startTest
+├── saveAnswer
+├── submitTest
+└── getMyAttempts
+
+
 
 
 
