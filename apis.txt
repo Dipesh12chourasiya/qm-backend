@@ -1,5 +1,17 @@
 
-1 Auth :
+1 Auth api:
 http://localhost:3000/api/auth/register
 http://localhost:3000/api/auth/login
 http://localhost:3000/api/auth/me
+
+2. Question api
+http://localhost:3000/api/questions/   POST question
+http://localhost:3000/api/questions/my  GET
+http://localhost:3000/api/questions/:id  GET by ID and PUT and DELETE
+
+3. Test api
+http://localhost:3000/api/tests/   POST test
+http://localhost:3000/api/tests/tests   GET all active tests
+http://localhost:3000/api/tests/:id     GET by ID 
+http://localhost:3000/api/tests/:id/register   register for test by user
+http://localhost:3000/api/tests/my       Get My Created Tests (company)

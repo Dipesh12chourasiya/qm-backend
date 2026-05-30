@@ -8,6 +8,8 @@ connectDB();
 
 const authRoutes = require("./routes/authRoutes");
 const questionRoutes = require("./routes/questionRoutes");
+const testRoutes = require("./routes/testRoutes");
+const attemptRoutes = require("./routes/attemptRoutes");
 
 
 const app = express();
@@ -20,7 +22,8 @@ app.use(express.json());
 //routes
 app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
-
+app.use("/api/tests", testRoutes);
+app.use("/api/attempts", attemptRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend is working!");
