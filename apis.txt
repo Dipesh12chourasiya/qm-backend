@@ -1,0 +1,5 @@
+
+1 Auth :
+http://localhost:3000/api/auth/register
+http://localhost:3000/api/auth/login
+http://localhost:3000/api/auth/me
