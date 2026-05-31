@@ -14,7 +14,6 @@ const attemptRoutes = require("./routes/attemptRoutes");
 const app = express();
 
 
-
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
@@ -24,21 +23,20 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
+      // allow server-to-server / Postman
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
-      // DO NOT throw error (prevents Vercel crash)
-      return callback(null, false);
+      return callback(null, false); // DO NOT throw error
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
-// preflight requests
-app.options("*", cors());
 
 
 app.use(express.json());
@@ -57,6 +55,6 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
