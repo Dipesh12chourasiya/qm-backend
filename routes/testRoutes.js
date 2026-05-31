@@ -59,7 +59,7 @@ router.post(
 /*
 Public Routes
 */
-router.get("/", getAllTests);
+router.get("/", protect, getAllTests);
 
 router.get("/:id", getTestById);
 
