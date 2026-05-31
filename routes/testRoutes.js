@@ -11,6 +11,7 @@ const {
   getTestById,
   registerForTest,
   getMyCreatedTests,
+  activateTest,
 } = require("../controllers/testController");
 
 /*
@@ -28,6 +29,13 @@ router.get(
   protect,
   authorize("COMPANY"),
   getMyCreatedTests
+);
+
+router.patch(
+  "/:id/activate",
+  protect,
+  authorize("COMPANY"),
+  activateTest
 );
 
 /*

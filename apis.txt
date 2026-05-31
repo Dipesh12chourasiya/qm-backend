@@ -15,3 +15,17 @@ http://localhost:3000/api/tests/tests   GET all active tests
 http://localhost:3000/api/tests/:id     GET by ID 
 http://localhost:3000/api/tests/:id/register   register for test by user
 http://localhost:3000/api/tests/my       Get My Created Tests (company)
+
+4. attempt api
+
+Start Test
+POST http://localhost:3000/api/attempts/start/:testId
+
+Save answer
+POST /api/attempts/answer
+
+Submit Test
+POST /api/attempts/submit/:attemptId
+
+Get My Attempts
+GET /api/attempts/my

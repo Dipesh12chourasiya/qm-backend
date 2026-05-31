@@ -100,7 +100,7 @@ const getTestById = async (req, res) => {
     ).populate({
       path: "questionIds",
       select:
-        "-correctAnswer -createdBy -__v",
+        "-createdBy -__v",
     });
 
     if (!test) {
@@ -209,10 +209,55 @@ const getMyCreatedTests = async (
   }
 };
 
+/*
+Activate Test
+PATCH /api/tests/:id/activate
+Private (COMPANY)
+*/
+
+const activateTest = async (
+  req,
+  res
+) => {
+  try {
+    const test =
+      await Test.findOne({
+        _id: req.params.id,
+        createdBy: req.user._id,
+      });
+
+    if (!test) {
+      return res.status(404).json({
+        success: false,
+        message: "Test not found",
+      });
+    }
+
+    test.status = "ACTIVE";
+
+    await test.save();
+
+    res.status(200).json({
+      success: true,
+      message:
+        "Test activated successfully",
+      test,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createTest,
   getAllTests,
   getTestById,
   registerForTest,
   getMyCreatedTests,
+  activateTest,
 };
