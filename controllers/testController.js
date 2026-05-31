@@ -74,10 +74,28 @@ const getAllTests = async (req, res) => {
       .populate("createdBy", "name companyName")
       .select("-questionIds");
 
+    let userRegistrations = [];
+
+    // only if user is logged in
+    if (req.user?._id) {
+      userRegistrations = await Registration.find({
+        userId: req.user._id,
+      }).select("testId");
+    }
+
+    const registeredTestIds = new Set(
+      userRegistrations.map((r) => r.testId.toString())
+    );
+
+    const testsWithStatus = tests.map((test) => ({
+      ...test.toObject(),
+      isRegistered: registeredTestIds.has(test._id.toString()),
+    }));
+
     res.status(200).json({
       success: true,
       count: tests.length,
-      tests,
+      tests: testsWithStatus,
     });
   } catch (error) {
     console.error(error);
@@ -214,22 +232,40 @@ Activate Test
 PATCH /api/tests/:id/activate
 Private (COMPANY)
 */
-
-const activateTest = async (
-  req,
-  res
-) => {
+const activateTest = async (req, res) => {
   try {
-    const test =
-      await Test.findOne({
-        _id: req.params.id,
-        createdBy: req.user._id,
-      });
+    const test = await Test.findOne({
+      _id: req.params.id,
+      createdBy: req.user._id,
+    });
 
     if (!test) {
       return res.status(404).json({
         success: false,
         message: "Test not found",
+      });
+    }
+
+    // ❌ prevent re-activation
+    if (test.status === "ACTIVE") {
+      return res.status(400).json({
+        success: false,
+        message: "Test is already active",
+      });
+    }
+
+    if (test.status === "COMPLETED") {
+      return res.status(400).json({
+        success: false,
+        message: "Completed test cannot be activated",
+      });
+    }
+
+    // optional validation
+    if (new Date(test.startTime) > new Date(test.endTime)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid test schedule",
       });
     }
 
@@ -239,8 +275,47 @@ const activateTest = async (
 
     res.status(200).json({
       success: true,
-      message:
-        "Test activated successfully",
+      message: "Test activated successfully",
+      test,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+const completeTest = async (req, res) => {
+  try {
+    const test = await Test.findOne({
+      _id: req.params.id,
+      createdBy: req.user._id,
+    });
+
+    if (!test) {
+      return res.status(404).json({
+        success: false,
+        message: "Test not found",
+      });
+    }
+
+    if (test.status !== "ACTIVE") {
+      return res.status(400).json({
+        success: false,
+        message: "Only ACTIVE tests can be completed",
+      });
+    }
+
+    test.status = "COMPLETED";
+    await test.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Test marked as completed",
       test,
     });
   } catch (error) {
@@ -260,4 +335,5 @@ module.exports = {
   registerForTest,
   getMyCreatedTests,
   activateTest,
+  completeTest,
 };

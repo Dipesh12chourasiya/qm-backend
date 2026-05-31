@@ -12,6 +12,7 @@ const {
   registerForTest,
   getMyCreatedTests,
   activateTest,
+  completeTest,
 } = require("../controllers/testController");
 
 /*
@@ -36,6 +37,13 @@ router.patch(
   protect,
   authorize("COMPANY"),
   activateTest
+);
+
+router.patch(
+  "/:id/complete",
+  protect,
+  authorize("COMPANY"),
+  completeTest
 );
 
 /*
