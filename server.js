@@ -13,9 +13,7 @@ const attemptRoutes = require("./routes/attemptRoutes");
 
 const app = express();
 
-/*
-CORS CONFIG (PRODUCTION SAFE)
-*/
+
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -25,23 +23,26 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // DO NOT throw error (prevents Vercel crash)
+      return callback(null, false);
+    },
     credentials: true,
   })
 );
 
-// handle preflight requests
+// preflight requests
 app.options("*", cors());
 
-/*
-MIDDLEWARES
-*/
 
 app.use(express.json());
 
-/*
-ROUTES
-*/
 
 app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
@@ -54,8 +55,8 @@ app.get("/", (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
+);
