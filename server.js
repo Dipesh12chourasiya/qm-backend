@@ -14,6 +14,7 @@ const attemptRoutes = require("./routes/attemptRoutes");
 const app = express();
 
 
+
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
@@ -23,18 +24,18 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow server-to-server / Postman
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
-      return callback(null, false); // DO NOT throw error
+      // IMPORTANT: DO NOT THROW ERROR
+      return callback(null, false);
     },
-    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
