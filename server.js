@@ -14,10 +14,9 @@ const attemptRoutes = require("./routes/attemptRoutes");
 const app = express();
 
 /*
-====================================
-CORS CONFIG (FIXED FOR DEPLOYMENT)
-====================================
+CORS CONFIG (PRODUCTION SAFE)
 */
+
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
@@ -26,39 +25,37 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin (like mobile apps or curl)
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        return callback(new Error("CORS not allowed"));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 // handle preflight requests
 app.options("*", cors());
 
-// middlewares
+/*
+MIDDLEWARES
+*/
+
 app.use(express.json());
 
-// routes
+/*
+ROUTES
+*/
+
 app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/tests", testRoutes);
 app.use("/api/attempts", attemptRoutes);
 
+
 app.get("/", (req, res) => {
   res.send("Backend is working!");
 });
 
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
-);
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
