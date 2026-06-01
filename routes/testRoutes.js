@@ -13,6 +13,7 @@ const {
   getMyCreatedTests,
   activateTest,
   completeTest,
+  getTestAnalytics
 } = require("../controllers/testController");
 
 /*
@@ -44,6 +45,13 @@ router.patch(
   protect,
   authorize("COMPANY"),
   completeTest
+);
+
+router.get(
+  "/:id/analytics",
+  protect,
+  authorize("COMPANY"),
+  getTestAnalytics
 );
 
 /*

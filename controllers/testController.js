@@ -1,6 +1,7 @@
 const Test = require("../models/Test");
 const Question = require("../models/Question");
 const Registration = require("../models/Registration");
+const Attempt = require("../models/Attempt");
 
 /*
 Create Test
@@ -328,6 +329,93 @@ const completeTest = async (req, res) => {
   }
 };
 
+
+
+/*
+Get test analytics
+GET /api/tests/:id/analytics
+Private (COMPANY)
+*/
+
+const getTestAnalytics = async (req, res) => {
+  try {
+    const testId = req.params.id;
+
+    // verify test belongs to company
+    const test = await Test.findOne({
+      _id: testId,
+      createdBy: req.user._id,
+    });
+
+    if (!test) {
+      return res.status(404).json({
+        success: false,
+        message: "Test not found",
+      });
+    }
+
+    const registrations = await Registration.find({
+      testId,
+    }).populate("userId", "name email");
+
+    const attempts = await Attempt.find({
+      testId,
+    });
+
+    const attemptMap = {};
+
+    attempts.forEach((attempt) => {
+      attemptMap[attempt.userId.toString()] =
+        attempt;
+    });
+
+    const analytics = registrations.map(
+      (registration) => {
+        const attempt =
+          attemptMap[
+            registration.userId._id.toString()
+          ];
+
+        return {
+          userId:
+            registration.userId._id,
+
+          name:
+            registration.userId.name,
+
+          email:
+            registration.userId.email,
+
+          registeredAt:
+            registration.createdAt,
+
+          attempted:
+            !!attempt,
+
+          score:
+            attempt?.score || 0,
+
+          percentage:
+            attempt?.percentage || 0,
+        };
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      testTitle: test.title,
+      totalRegistered:
+        registrations.length,
+      analytics,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createTest,
   getAllTests,
@@ -336,4 +424,5 @@ module.exports = {
   getMyCreatedTests,
   activateTest,
   completeTest,
+  getTestAnalytics
 };

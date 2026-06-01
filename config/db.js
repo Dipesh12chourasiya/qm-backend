@@ -15,10 +15,23 @@ const connectDB = async () => {
     cached.promise = mongoose
       .connect(process.env.MONGO_URI)
       .then((mongoose) => mongoose);
+
+      console.log("Connected to MongoDB");
   }
 
   cached.conn = await cached.promise;
+  console.log("MongoDB connection established");
   return cached.conn;
 };
 
 module.exports = connectDB;
+
+
+
+// const mongoose = require("mongoose");
+
+// const connectDB = async () => {
+//   await mongoose.connect(process.env.MONGO_URI);
+// };  
+
+// module.exports = connectDB;
